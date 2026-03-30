@@ -1,46 +1,72 @@
-import React from "react";
-import { TodoAdd } from "./TodoAdd";
+const Board = ({ tasks = [], filter, onToggle, onDelete }) => {
+  const filteredTasks = tasks.filter((task) => {
+    if (filter === "Active") return !task.completed;
+    if (filter === "Completed") return task.completed;
+    return true;
+  });
 
-export const Board = () => {
   return (
-    <div className="flex justify-center pt-4 bg-gray-100 h-screen">
-      <div
-        className="w-[377px] h-[290px] flex  bg-blue-200 flex-col gap-4 pt-6 drop-shadow-2xl rounded-md
-      "
-      >
-        <div className="w-[345px] h-7 flex items-center justify-center  font-semibold   ml-4">
-          <div>To-Do list</div>
-        </div>
-        <div className="w-[345px] h-[38px] bg-white mx-4 flex items-center px-2 gap-2 size-5">
-          {" "}
-          <div className="flex     justify-center items-center ">
-            <div className="w-[280px] h-10  border-gray-300 border-2 rounded-md flex  px-2  items-center ">
-              <input taskInput type="text" className="w-full h-full" />
+    <div className="space-y-3 min-h-[100px] text-left">
+      {filteredTasks.length > 0 ? (
+        filteredTasks.map((task) => (
+          <div
+            key={task.id}
+            className="group flex items-center p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition shadow-sm"
+          >
+            <div
+              onClick={() => onToggle(task.id)}
+              className={`w-5 h-5  border mr-3 flex items-center justify-center cursor-pointer transition ${
+                task.completed
+                  ? "bg-blue-500 border-blue-500"
+                  : "border-gray-300 bg-white"
+              }`}
+            >
+              {task.completed && (
+                <span className="text-white text-[10px]">✓</span>
+              )}
             </div>
+
+            <span
+              onClick={() => onToggle(task.id)}
+              className={`flex-1 text-sm cursor-pointer ${
+                task.completed ? "line-through text-gray-400" : "text-gray-700"
+              }`}
+            >
+              {task.text}
+            </span>
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(task.id);
+              }}
+              className="ml-2 text-gray-300 hover:text-red-500 transition-colors p-1"
+              title="Delete task"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
+            </button>
           </div>
-          <button className="w-15 h-10 rounded-md bg-blue-500 flex justify-center items-center text-white">
-            Add
-          </button>
+        ))
+      ) : (
+        <div className="py-10 text-center text-gray-400 text-sm">
+          No tasks found.
         </div>
-        <div className="w-[345px] h-[32]  flex pl-4 gap-1.5 ">
-          <button className="w-[38px] h-8 bg-blue-500 rounded-md gap-1.5 text-white flex justify-center items-center">
-            All
-          </button>
-          <button className="w-[60px] h-8 bg-gray-400 rounded-md flex justify-center items-center">
-            Active
-          </button>
-          <button className="w-[87px] h-8 rounded-md bg-gray-400 flex justify-center items-center">
-            Completed
-          </button>
-        </div>
-        {/* <div className="w-[345px] h-4 flex justify-center size-4 text-gray-600">
-          No tasks yet. Add one above!
-        </div> */}
-        <div className="w-[345px] h-4 flex justify-center gap-2 text-sm pt-10">
-          <div>Powered by</div>
-          <div className="text-blue-600">Pinecone academy</div>
-        </div>
-      </div>
+      )}
     </div>
   );
 };
+
+export default Board;
